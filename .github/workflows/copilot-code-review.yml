@@ -1,0 +1,40 @@
+# The runner Copilot's code review runs on.
+#
+# Without this file the review falls back to `ubuntu-latest`. This names the same pinned image every
+# job in build.yml and analyze.yml runs on, so that the review sees the image the checks do, and an
+# image move is a change made here rather than one that happens to the review unannounced.
+#
+# Only `steps`, `permissions`, `runs-on`, `services`, `snapshot` and `timeout-minutes` are
+# read from the job below, and only from the copy on the default branch - a change here does
+# nothing until it merges, and cannot be tested by the review round of the pull request that
+# makes it.
+name: Copilot code review
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/copilot-code-review.yml
+  pull_request:
+    branches: [main]
+    paths:
+      - .github/workflows/copilot-code-review.yml
+
+permissions:
+  contents: read
+
+jobs:
+  # Named for Copilot, which looks for this job and ignores the rest of the file. Renaming it
+  # puts the review back on ubuntu-latest, in silence.
+  copilot-setup-steps:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      # Nothing to install. The review reads the tree; it does not build it, and the toolchain
+      # this repository runs everything else through is a container the review has no use for.
+      # A job needs a step, so this is the step.
+      - name: Ready
+        run: echo "Copilot code review runs on ubuntu-24.04"
