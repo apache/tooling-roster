@@ -287,12 +287,12 @@ h6,
 
 /* The page frame: the brand ribbon, a header naming the tool, and a single column. The
    sidebar BAT has arrives when there is more than one page worth navigating to. */
-.sr-ribbon {
+.roster-ribbon {
   height: 4px;
   background: linear-gradient(90deg, var(--bat-navy), var(--bat-purple), var(--bat-red), var(--bat-orange));
 }
 
-.sr-header {
+.roster-header {
   display: flex;
   flex-wrap: wrap;
   gap: var(--bat-space-2) var(--bat-space-4);
@@ -303,7 +303,7 @@ h6,
   background: var(--bat-surface);
 }
 
-.sr-header .sr-brand {
+.roster-header .roster-brand {
   font-family: 'Montserrat', var(--bs-font-sans-serif);
   font-size: var(--bat-text-section);
   font-weight: 600;
@@ -311,20 +311,20 @@ h6,
   text-decoration: none;
 }
 
-.sr-header nav {
+.roster-header nav {
   display: flex;
   flex-wrap: wrap;
   gap: var(--bat-space-4);
   font-size: var(--bat-text-ui);
 }
 
-.sr-main {
+.roster-main {
   max-width: 60rem;
   margin: 0 auto;
   padding: var(--bat-space-6) var(--bat-space-4);
 }
 
-.sr-dev-banner {
+.roster-dev-banner {
   padding: var(--bat-space-2) var(--bat-space-4);
   font-size: var(--bat-text-ui);
   color: var(--bat-amber-text);

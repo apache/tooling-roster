@@ -39,7 +39,7 @@ id in one of them to see the tool as that role:
 
 ```shell
 cp config.yaml.example config.yaml
-# then, under roles:, e.g.  secretarial_team: [<your-asf-id>]
+# then, under roles:, e.g.  secretary: [<your-asf-id>]
 ```
 
 Members of the Tooling PMC are the Admin role whatever the lists say.
@@ -186,7 +186,7 @@ and cache.
 - Add new API routes in a module under `app/api/routes/` and import it in
   `app/api/routes/__init__.py`
 - Put `require_role(..., to="...")` on every route that changes something and
-  on every route that reads the queue, and test that a role without it is
+  on every route that reads the roster, and test that a role without it is
   refused
 - Add new database models in `app/db/models.py`, then create an Alembic
   migration in `app/db/migrations/versions/`
@@ -254,7 +254,7 @@ issues — because no gate existed and each addition was locally reasonable.
   facts and belong in a labelled column. If a value is true of nearly every row,
   it is a column.
 - **Name tokens and classes for meaning, scoped to their component.**
-  `--stop`, not `--red`; `.sr-chip-count`, not `.n`. A short generic name collides
+  `--stop`, not `--red`; `.roster-chip-count`, not `.n`. A short generic name collides
   silently the moment two components nest, and equal specificity means whichever
   rule comes second wins.
 - **No new hardcoded `px` font sizes and no `transition: all`.** Both break text

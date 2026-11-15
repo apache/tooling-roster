@@ -7,5 +7,6 @@ the ones marked *yours* are the roles you hold.
 
 ## Who can see what
 
-The roster holds personal data, so only the Secretary can see it. ASF members
-at large have no access.
+The roster holds personal data. For now only the Secretary can see it, and ASF
+members at large have no access. Who else may read or change it is still to be
+decided.

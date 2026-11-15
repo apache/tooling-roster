@@ -9,7 +9,8 @@ Browser-level tests that drive the real app, signed in as whoever a spec needs.
   with an empty database. It sets `ROSTER_E2E=1`, which enables the dev-only
   `/e2e/login/<uid>` route in `app/client/routes.py`. That route mints an
   asfquart session cookie for any uid without going through ASF OAuth, and
-  returns 404 unless `ROSTER_E2E=1`, so it is never reachable in production.
+  returns 404 unless `ROSTER_E2E=1`, so it is never reachable in production. Never
+  set `ROSTER_E2E` in a deployment: it lets anybody sign in as any uid with any role.
 
   `?roles=secretary,admin` grants those roles (`app/models/role.py`) to that
   session alone. They are kept in the session's own metadata, so a role one

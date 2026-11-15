@@ -225,7 +225,7 @@ async def ask_everyone(clients: world.Clients, url: str, part: str = "watched") 
 
     Readers answered alike share one heading. The Secretary's answer is written whole, and every other
     one as a diff against it where that is shorter - a page differs between readers by a link or two in
-    its header, and seven copies of a page say nothing six diffs do not. Nothing is lost: each answer can
+    its header, and five copies of a page say nothing four diffs do not. Nothing is lost: each answer can
     be rebuilt from the record, and the record is compared byte for byte."""
     groups: dict[str, list[str]] = {}
     for who, text in await _answers(clients, url, part):

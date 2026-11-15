@@ -50,7 +50,7 @@ EXAMPLES = {
     "app/**/alembic.ini": "app/db/alembic.ini",
     "app/__init__.py": "app/__init__.py",
     "app/**/__init__.py": "app/admin/__init__.py",
-    "tests/data/**": "tests/data/submissions/icla.pdf",
+    "tests/data/**": "tests/data/people/example.json",
     "tests/conftest.py": "tests/conftest.py",
     "tests/behaviour/**": "tests/behaviour/world.py",
     "scripts/ci/behaviour.py": "scripts/ci/behaviour.py",

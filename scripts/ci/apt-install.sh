@@ -117,12 +117,12 @@ if from_cache; then
 fi
 
 for file in $sources; do
-    [ -f "$file" ] && sudo cp -- "$file" "$file.sr-original"
+    [ -f "$file" ] && sudo cp -- "$file" "$file.roster-original"
 done
 
 restore_sources() {
     for file in $sources; do
-        [ -f "$file.sr-original" ] && sudo cp -- "$file.sr-original" "$file"
+        [ -f "$file.roster-original" ] && sudo cp -- "$file.roster-original" "$file"
     done
 }
 

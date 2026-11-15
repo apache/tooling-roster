@@ -42,6 +42,14 @@ def test_no_smtp_block_means_no_mail(tmp_path: pathlib.Path):
     assert not loaded.is_smtp_configured()
 
 
+def test_a_name_that_is_not_a_role_is_an_error_not_a_role_nobody_holds(tmp_path: pathlib.Path):
+    path = tmp_path / "config.yaml"
+    path.write_text("roles:\n  secretarial_team: [me]\n")
+
+    with pytest.raises(ValueError, match="secretarial_team"):
+        config.load_app_config(path)
+
+
 def test_a_missing_config_file_is_an_error(tmp_path: pathlib.Path):
     with pytest.raises(RuntimeError, match="does not exist"):
         config.load_app_config(tmp_path / "absent.yaml")

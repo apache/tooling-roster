@@ -989,7 +989,7 @@ refuse "sed -n '1e ROSTER_ISOLATED=1 scripts/container.sh make test' f"
 # Unsetting it asks for a container, which is the safe direction - but only as its own words:
 # `X=-u ROSTER_ISOLATED=1` is two assignments, and read as an unset it was let through.
 allow 'env -u ROSTER_ISOLATED scripts/container.sh make test'
-allow 'env -uSR_ISOLATED scripts/container.sh make test'
+allow 'env -uROSTER_ISOLATED scripts/container.sh make test'
 allow 'env -u FOO -u ROSTER_ISOLATED scripts/container.sh make test'
 refuse 'env -u ROSTER_ISOLATED ROSTER_ISOLATED=1 scripts/container.sh make test'
 refuse 'X=-u ROSTER_ISOLATED=1 scripts/container.sh make test'

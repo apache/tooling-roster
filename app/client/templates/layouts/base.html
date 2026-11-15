@@ -35,9 +35,9 @@
     {% endblock stylesheets %}
   </head>
   <body>
-    <div class="sr-ribbon"></div>
-    <header class="sr-header">
-      <a class="sr-brand" href="{{ url_for('client.home') }}">Roster</a>
+    <div class="roster-ribbon"></div>
+    <header class="roster-header">
+      <a class="roster-brand" href="{{ url_for('client.home') }}">Roster</a>
       <nav aria-label="Main">
         {% if current_user %}
           {% if current_user.roles %}<a href="{{ url_for('client.documentation') }}">Documentation</a>{% endif %}
@@ -51,11 +51,11 @@
       </nav>
     </header>
     {% if dev_mode %}
-      <div class="sr-dev-banner">
+      <div class="roster-dev-banner">
         This instance is running in dev mode and is <strong>not</strong> connected to production data.
       </div>
     {% endif %}
-    <main class="sr-main">
+    <main class="roster-main">
       <h1 class="h4 mb-4">
         {% block page_title %}
         {% endblock page_title %}

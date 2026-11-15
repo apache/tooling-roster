@@ -89,7 +89,7 @@ run_it
 
 new_assets seeded 'lock-b'
 printf 'installed elsewhere\n' > "$assets/node_modules/.yarn-state.yml"
-printf 'the other checkout stamp\n' > "$assets/node_modules/.sr-install-stamp"
+printf 'the other checkout stamp\n' > "$assets/node_modules/.roster-install-stamp"
 run_it
 [ "$status" -eq 0 ] || fail "a seeded node_modules exited $status" "$output"
 installs seeded || fail 'a volume seeded from another checkout did not install' "$output"
@@ -139,7 +139,7 @@ export STUB_YARN_EXIT
 run_it
 unset STUB_YARN_EXIT
 [ "$status" -ne 0 ] || fail 'a failed install exited 0' "$output"
-[ ! -f "$assets/node_modules/.sr-install-stamp" ] ||
+[ ! -f "$assets/node_modules/.roster-install-stamp" ] ||
     fail 'a failed install left a stamp saying it had succeeded' "$output"
 
 STUB_YARN_EXIT=0
@@ -155,7 +155,7 @@ run_it
 
 new_assets interrupted 'lock-a'
 run_it
-[ -f "$assets/node_modules/.sr-install-stamp" ] || fail 'the first install wrote no stamp' "$output"
+[ -f "$assets/node_modules/.roster-install-stamp" ] || fail 'the first install wrote no stamp' "$output"
 
 printf 'lock-b\n' > "$assets/yarn.lock"
 STUB_YARN_EXIT=1

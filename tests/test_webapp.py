@@ -82,6 +82,17 @@ async def test_the_documentation_is_refused_to_somebody_without_a_role(authentic
     assert "can read the documentation" in await response.get_data(as_text=True)
 
 
+async def test_an_admin_can_read_the_documentation_and_holds_only_the_admin_section(authenticated_client):
+    client = await authenticated_client("zed", roles="admin")
+
+    response = await client.get("/documentation")
+
+    assert response.status_code == 200
+    page = await response.get_data(as_text=True)
+    assert page.count('data-doc-mine="true"') == 1
+    assert re.search(r'data-doc-section="admin"\s+data-doc-mine="true"', page), "the one marked is the admin's"
+
+
 async def test_the_documentation_marks_the_sections_the_reader_holds(authenticated_client):
     client = await authenticated_client("ada")
 

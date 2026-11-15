@@ -53,7 +53,7 @@ class TestGuard:
         import aiosmtplib
 
         message = EmailMessage()
-        message["From"] = "secretary@example.org"
+        message["From"] = "roster@example.org"
         message["To"] = "someone@example.org"
         message["Subject"] = "A subject"
         message.set_content("A body.")

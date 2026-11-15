@@ -395,7 +395,7 @@ the same rules by reading them.
   `app/api/routes/__init__.py`, or its routes do not exist.
 - Roles: `app/models/role.py`, worked out per request in `app/access.py`.
   Every mutating route carries `require_role(..., to="...")`, and so does every
-  route that reads the queue.
+  route that reads the roster.
 - Database: add models in `app/db/models.py` plus a sequential Alembic
   migration (`0001`, `0002`, ...) in `app/db/migrations/versions/`; migrations
   auto-apply on startup, and startup refuses to serve when the models and the
@@ -692,7 +692,7 @@ check rather than a thing to remember.
   whether an edit could bring the old shape back. Keep the history when it names a
   shape the code is avoiding and something could reintroduce - `app/config.py` on why an
   instance without an smtp block sends nothing, rather than defaulting to a relay that would
-  address real mail to the people who sent their paperwork. Cut it when it only narrates the
+  address real mail to the people on the roster. Cut it when it only narrates the
   edit that happened: "this used to be a bare `except`" describes a version nobody can
   reach, and ages into fiction once the thing it compares against is forgotten. Git
   keeps the history either way; a comment earns its past tense by warning, not by

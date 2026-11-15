@@ -34,8 +34,8 @@
 set -eu
 
 assets=${1:-/run/roster/assets}
-stamp="$assets/node_modules/.sr-install-stamp"
-lock="$assets/node_modules/.sr-install-lock"
+stamp="$assets/node_modules/.roster-install-stamp"
+lock="$assets/node_modules/.roster-install-lock"
 
 # The escape hatch for the deadlock this would otherwise be. `yarn install
 # --immutable` refuses a lockfile that disagrees with package.json, and this runs
