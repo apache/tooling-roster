@@ -1,0 +1,17 @@
+[Unit]
+Description=ASF Roster
+
+[Service]
+Type=exec
+WorkingDirectory=/opt/roster
+PIDFile=/opt/roster/state/roster.pid
+ExecStart=/opt/roster/scripts/run.sh
+ExecReload=/bin/kill -SIGINT $MAINPID
+KillSignal=SIGINT
+Restart=always
+User=roster
+Group=roster
+LogLevelMax=info
+
+[Install]
+WantedBy=multi-user.target
