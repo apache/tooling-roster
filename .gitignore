@@ -1,0 +1,16 @@
+# What the shared scripts write in a checkout: scratch they delete with it (scripts/worktree-done.sh).
+state/
+state-e2e/
+state-e2e-*/
+state-preview/
+
+# .claude/ holds the part of the Claude Code harness that belongs to the repository - the settings, the
+# hook and the commands, and the additions to the settings - and the rest of it is personal or scratch: a
+# session's approvals (settings.local.json) and its linked worktree (worktrees/). So the directory is
+# ignored by default and the shared parts opted back in.
+.claude/*
+!.claude/commands/
+!.claude/hooks/
+!.claude/settings.json
+!.claude/settings.additions.json
+!.claude/skills/
