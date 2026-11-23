@@ -1,0 +1,182 @@
+exclude: '^(app/client/static/vendor)|migrations'
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v6.0.0
+  hooks:
+    - id: check-toml
+    - id: check-yaml
+    - id: end-of-file-fixer
+    - id: mixed-line-ending
+    - id: trailing-whitespace
+    # PEM and SSH key material, wherever it is pasted
+    - id: detect-private-key
+- repo: https://github.com/Lucas-C/pre-commit-hooks
+  rev: v1.5.6
+  hooks:
+    - id: insert-license
+      name: Add license for all Python files
+      files: ^((app|tests|e2e)/(.*\.py$|.*\.pyi)|server.py)$
+      args:
+        - --comment-style
+        - "|#|"
+        - --license-filepath
+        - scripts/ci/LICENSE-template.txt
+        - --fuzzy-match-generates-todo
+- repo: https://github.com/DavidAnson/markdownlint-cli2
+  rev: v0.20.0
+  hooks:
+    - id: markdownlint-cli2
+      exclude: ^tests/
+- repo: https://github.com/shellcheck-py/shellcheck-py
+  rev: v0.11.0.1
+  hooks:
+  -   id: shellcheck
+      # shellcheck keeps its sharper checks behind --enable. These four are the ones that
+      # catch a bug rather than state a preference: an unquoted expansion that word-splits
+      # on a path with a space, a `case` that silently does nothing for an unexpected
+      # value, `which` instead of `command -v`, and `[ -n $x ]` written without quotes.
+      # The remaining optional checks are stylistic (require-variable-braces and friends)
+      # and would report on every script here without making one of them safer.
+      # -x: a hook run scoped to only the staged files (the git commit hook, unlike
+      # `make check`'s --all-files) does not hand shellcheck the sibling scripts
+      # container.sh and e2e-container.sh source with `.`, so without this it reports
+      # SC1091 on both of them whenever a commit touches one without the other.
+      args:
+        - --enable=quote-safe-variables,add-default-case,deprecate-which,avoid-nullary-conditions
+        - -x
+- repo: https://github.com/Riverside-Healthcare/djLint
+  rev: v1.36.4
+  hooks:
+    - id: djlint
+      files: "app/client/templates/.*\\.html$"
+      types_or: ['html']
+      args:
+        - --profile=jinja
+        - --lint
+    - id: djlint
+      name: Format HTML templates
+      files: "app/client/templates/.*\\.html$"
+      types_or: ['html']
+      args:
+        - --profile=jinja
+        - --reformat
+- repo: https://github.com/thibaudcolas/pre-commit-stylelint
+  rev: v16.26.1
+  hooks:
+    - id: stylelint
+      additional_dependencies: ['stylelint@16.14.1', 'stylelint-config-standard@37.0.0']
+      files: "assets/src/css/.*\\.css$"
+      types_or: ['css']
+      args: ['--fix']
+- repo: https://github.com/woodruffw/zizmor-pre-commit
+  rev: v1.22.0
+  hooks:
+    - id: zizmor
+      args: [ --min-severity, low ]
+- repo: https://github.com/astral-sh/uv-pre-commit
+  rev: 0.13.6
+  hooks:
+    - id: uv-lock
+- repo: local
+  hooks:
+    - id: forbid-secure-context-only-apis
+      name: Forbid secure-context-only browser APIs
+      # crypto.randomUUID is undefined outside a secure context, so it throws when the
+      # dev server is reached over plain http on anything but localhost, taking the
+      # whole feature down with it. utils.uniqueId() wraps it with a fallback.
+      entry: 'crypto\.randomUUID'
+      language: pygrep
+      files: '^assets/src/.*\.(ts|svelte)$'
+      # utils.ts implements the wrapper; its test exercises the raw API on purpose
+      exclude: '^assets/src/js/libs/utils(\.test)?\.ts$'
+    - id: forbid-env-files
+      name: Forbid committing a .env file
+      # A .env holds the LDAP bind credentials this instance authenticates with, so it
+      # must never reach a commit. .gitignore covers .env*, which stops it being picked
+      # up by a wildcard add; this catches the two ways past that - `git add -f`, and a
+      # file that was already staged before the ignore rule existed. There is no tracked
+      # .env template, so the pattern needs no exception.
+      entry: >-
+        a .env holds credentials and must not be committed. Keep it untracked (it is in
+        .gitignore); if you need a template, add one under a name that is not .env*.
+      language: fail
+      files: '(^|/)\.env($|[.-])'
+    - id: forbid-double-type-assertion
+      name: Forbid a type assertion that erases the check
+      # `x as unknown as T` and `x as any` assert past the type system rather than
+      # narrowing within it, and no amount of type-checking catches either - which is why
+      # `LABEL as unknown as Array<'fontSize'>` reached BAT's main on #729 and had to be found
+      # by a reviewer. It told the compiler that six property names were all `fontSize`,
+      # so a misspelt one would have compiled, read `undefined`, compared equal to the
+      # other `undefined`, and passed while measuring nothing.
+      #
+      # There were none in the tree when this was added, so keeping it that way costs
+      # nothing. Write the type, or narrow with something that can fail.
+      #
+      # `as any` has to end an expression to count, or the rule reads prose and fires on a
+      # comment in BAT's RecurringItemFormModal.svelte - "the same 78-character column limit as
+      # any other agenda text" - which is how a rule nobody can work under gets switched
+      # off, taking the half that catches something with it.
+      entry: '\bas\s+unknown\s+as\b|\bas\s+any\s*($|[;,)\]}])'
+      language: pygrep
+      files: '^(assets/src|e2e)/.*\.(ts|svelte)$'
+    - id: ruff
+      name: Ruff Linter
+      entry: uv run ruff check --fix
+      language: system
+      types: [python]
+    - id: ruff-format
+      name: Ruff Formatter
+      entry: uv run ruff format --force-exclude
+      language: system
+      types: [python]
+    - id: pyright
+      name: Pyright Type Check
+      entry: uv run pyright
+      language: system
+      require_serial: true
+      types: [python]
+      exclude: ^tests/
+    - id: yarn-format
+      name: yarn format:check (prettier)
+      # Split from yarn-lint below: this half is as fast as the hooks around it, so it
+      # stays at the default commit stage. Assumes the install is already current, like
+      # pyright above - `make init`/`make build` and this container's own setup are what
+      # keep node_modules in sync, not this hook.
+      entry: yarn --cwd assets format:check
+      language: system
+      pass_filenames: false
+      files: '^assets/src/.*\.(css|js|svelte)$'
+    # The suites are too slow to run on every commit, but not on every push. These
+    # run in the dev container, so they need no host toolchain; enable them with
+    # `prek install --hook-type pre-push`.
+    - id: yarn-lint
+      name: yarn lint (svelte-check, eslint)
+      # The slow half of what used to be one hook: svelte-check checks the whole project
+      # rather than per-file, like pyright above, and is what makes this too slow for
+      # every commit next to the near-instant hooks around it - unlike prettier, split
+      # out above. Assumes the install is already current, for the same reason pyright
+      # does not run one either.
+      entry: yarn --cwd assets lint
+      language: system
+      stages: [pre-push]
+      pass_filenames: false
+      always_run: true
+      # eslint's complexity warnings are deliberately not failures (see the quality
+      # ratchet), so a passing run still has something worth reading - without this,
+      # prek only prints a hook's output when it fails, and they would go unseen.
+      verbose: true
+    - id: container-test
+      name: Run the test suites in the dev container
+      entry: scripts/container.sh make test
+      language: system
+      stages: [pre-push]
+      pass_filenames: false
+      always_run: true
+    - id: e2e-test
+      name: Run the end-to-end suite in containers
+      entry: scripts/e2e-container.sh
+      language: system
+      stages: [pre-push]
+      pass_filenames: false
+      always_run: true
