@@ -1,0 +1,34 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}
+  Home
+{% endblock title %}
+
+{% block page_title %}
+  Roster
+{% endblock page_title %}
+
+{% block content %}
+  {% if current_user %}
+    {# The island turns these into a sentence (assets/src/js/components/RoleSummary.svelte).
+       Single-quoted: tojson escapes the apostrophe and leaves the double quotes its own
+       syntax needs. #}
+    <div id="role-summary"
+         class="mb-4"
+         data-uid="{{ current_user.uid }}"
+         data-roles='{{ current_user.sorted_roles | tojson }}'></div>
+    {% if current_user.has_any_role(editor_roles) %}
+      <p data-testid="roster-placeholder">The roster will be here.</p>
+    {% else %}
+      <p data-testid="no-access">
+        The roster holds personal data. For now only the Secretary can see it. Ask the
+        Secretary if you should be able to.
+      </p>
+    {% endif %}
+  {% else %}
+    <p>
+      This tool keeps the roster: the ASF's bodies, the people in them, invitations and account requests.
+      <a href="{{ url_for("oauth_endpoint") }}?login={{ request.path }}">Sign in</a> with your Apache account to continue.
+    </p>
+  {% endif %}
+{% endblock content %}

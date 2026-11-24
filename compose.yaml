@@ -1,0 +1,20 @@
+services:
+  roster:
+    image: roster
+    build: .
+    hostname: roster
+    command: /bin/sh /mnt/scripts/start.sh
+    volumes:
+    - .:/mnt:ro
+    - roster-venv:/run/roster/.venv
+    - roster-node:/run/roster/assets/node_modules
+    - roster-cert:/run/cert
+    ports:
+      - "4500:4500"
+      - "443:443"
+
+# Cache for .venv, assets/node_modules and SSL cert
+volumes:
+  roster-venv:
+  roster-node:
+  roster-cert:
